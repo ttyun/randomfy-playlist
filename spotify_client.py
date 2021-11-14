@@ -36,7 +36,6 @@ class SpotifyClient(object):
             "Authorization": f"Bearer {self.auth_token}"
          }
       )
-      print(f'{url}={response}')
       response_json = response.json()
       tracks = [track for track in response_json['tracks']['items']]
       print(f'Found {len(tracks)} from your search.')
