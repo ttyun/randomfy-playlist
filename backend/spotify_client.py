@@ -2,7 +2,10 @@ import random
 import string
 import requests
 import urllib
-from spotify_credentials import refresh_token, encoded_spotify_client_id, client_id, spotify_user_id
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+from flask import Flask, request, url_for, session, redirect
+from spotify_credentials import refresh_token, encoded_spotify_client_id, client_id, client_secret, spotify_user_id
 
 class SpotifyClient(object):
    def __init__(self, auth_token):
@@ -25,6 +28,15 @@ class SpotifyClient(object):
       )
       response_json = response.json()
       return response_json["access_token"]
+
+   @staticmethod
+   def create_spotify_oauth():
+      return SpotifyOAuth(
+         client_id=client_id,
+         client_secret=client_secret,
+         redirect_uri=url_for('redirectApplication', _external=True)
+         #scope='playlist-modify-public,playlist-read-public,user-library-read'
+      )
    
    # Spotify Client - Search for Tracks
    def spotify_search_tracks(self, query, offset, limit):
@@ -36,6 +48,7 @@ class SpotifyClient(object):
             "Authorization": f"Bearer {self.auth_token}"
          }
       )
+      print(f'{url}={response}')
       response_json = response.json()
       tracks = [track for track in response_json['tracks']['items']]
       print(f'Found {len(tracks)} from your search.')
