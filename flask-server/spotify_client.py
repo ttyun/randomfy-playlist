@@ -5,38 +5,10 @@ import urllib
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from flask import Flask, request, url_for, session, redirect
-from spotify_credentials import refresh_token, encoded_spotify_client_id, client_id, client_secret, spotify_user_id
 
 class SpotifyClient(object):
    def __init__(self, auth_token):
       self.auth_token = auth_token
-   
-   # Use refresh token to grab auth token
-   @staticmethod
-   def get_auth_token():
-      url = "https://accounts.spotify.com/api/token"
-      response = requests.post(
-         url,
-         headers={
-            "Authorization": f"Basic {encoded_spotify_client_id}"
-         },
-         data={
-            "grant_type": "refresh_token",
-            "refresh_token": refresh_token,
-            "client_id": client_id
-         }
-      )
-      response_json = response.json()
-      return response_json["access_token"]
-
-   @staticmethod
-   def create_spotify_oauth():
-      return SpotifyOAuth(
-         client_id=client_id,
-         client_secret=client_secret,
-         redirect_uri=url_for('redirectApplication', _external=True)
-         #scope='playlist-modify-public,playlist-read-public,user-library-read'
-      )
    
    # Spotify Client - Search for Tracks
    def spotify_search_tracks(self, query, offset, limit):
@@ -77,7 +49,7 @@ class SpotifyClient(object):
       user_id = response_json['id']
 
       # Create a playlist for user
-      url = f'https://api.spotify.com/v1/users/{spotify_user_id}/playlists'
+      url = f'https://api.spotify.com/v1/users/{user_id}/playlists'
       response = requests.post(
          url,
          headers={

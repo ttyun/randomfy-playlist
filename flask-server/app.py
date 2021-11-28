@@ -1,6 +1,4 @@
-import os
-import spotipy
-from flask import Flask, request, url_for, session, redirect, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin # Good to know in the future
 from spotify_client import SpotifyClient
 
@@ -14,42 +12,19 @@ CORS(app)
 #    "allow_headers": ["Authorization"]
 # }
 
-# app.secret_key = 'ASD27DWT312GJKD'
-# app.config['SESSION_COOKIE_NAME'] = 'Ty Cookie Session'
-
-@app.route('/', methods=['GET'])
-def login():
-   oauth = SpotifyClient.create_spotify_oauth()
-   auth_url = oauth.get_authorize_url()
-   print(auth_url)
-   return redirect(auth_url)
-
-@app.route('/redirect', methods=['GET'])
-def redirectApplication():
-   oauth = SpotifyClient.create_spotify_oauth()
-   # session.clear()
-   auth_code = request.args.get('code')
-   auth_token_info = oauth.get_access_token(auth_code)
-   print(auth_token_info)
-   # session[AUTH_TOKEN_INFO] = auth_token_info
-   return redirect(url_for('processPlaylist', _external=True))
-
 @app.route('/playlists', methods=['GET'])
 def processPlaylist():
-   added_track_names = generatePlaylist()
+   access_token = request.headers.get('Authorization')
+   added_track_names = generatePlaylist(access_token)
    return jsonify(added_tracks=added_track_names)
 
-
-def generatePlaylist():
+def generatePlaylist(access_token):
    playlist_name = 'AUTOPLAY'
    description = 'Automatically generated playlist. Check for new songs you may like.'
    isPublic = True
 
-   # Get auth token
-   auth_token = SpotifyClient.get_auth_token()
-
    # Create spotify client
-   spotify_client = SpotifyClient(auth_token)
+   spotify_client = SpotifyClient(access_token)
    
    # Collect random list of top edm songs
    random_edm_tracks = spotify_client.get_random_tracks(5)
