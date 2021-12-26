@@ -46,12 +46,21 @@ def generatePlaylist(access_token):
    # Add combined tracks into Spotify playlist
    was_added = spotify_client.add_tracks_to_playlist(playlist_track_uris,
          playlist_name, description, isPublic)
-   added_track_names = []
+   added_songs = []
+   
    if was_added:
       for track in playlist_tracks:
-         print(f"Added track: {track['name']}")
-         added_track_names.append(track['name'])
-   return added_track_names
+         added_song = {}
+         added_song['name'] = track['name']
+         artists = ''
+         for artist in track['artists']:
+            artists += artist['name'] + ', '
+         added_song['artist'] = artists[:-2]
+         added_song['album'] = track['album']['name']
+         added_songs.append(added_song)
+         print(f"Added track: {added_song['name']}")
+
+   return added_songs
 
 if __name__ == '__main__':
    app.run(debug=True, port=5000)

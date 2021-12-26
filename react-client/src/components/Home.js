@@ -1,10 +1,19 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
+import Header from './Header';
+import SimpleButton from './SimpleButton';
+import AudiotrackIcon from '@mui/icons-material/Audiotrack';
+import { textColor } from '../constants';
+
+const textMargin = {
+   margin: '5px 0'
+}
 
 function Home() {
    // React method to set state in non-React component
    const [isGenerated, setIsGenerated] = useState(false);
+   const [songsAdded, setSongsAdded] = useState([]);
 
    // React method to call "side effect"
    // Effectively the callback function is called whenever
@@ -20,12 +29,14 @@ function Home() {
       }
    });
 
-   function clearIsGenerated() {
+   function clearResults() {
       setIsGenerated(false);
+      setSongsAdded([]);
    }
 
-   function toggleIsGenerated() {
-      setIsGenerated(!isGenerated);
+   function setResults(res) {
+      setIsGenerated(true);
+      setSongsAdded(res['data']['added_tracks']);
    }
 
    function authorizeWithSpotify(hash) {
@@ -41,7 +52,7 @@ function Home() {
    };
 
    function generatePlaylist() {
-      clearIsGenerated();
+      clearResults();
       const config = {
          headers: {
             'Content-Type': 'application/json',
@@ -49,9 +60,9 @@ function Home() {
          }
       }
 
-      axios.get("http://localhost:5000/playlists", config).then(res => {
+      axios.get("http://127.0.0.1:5000/playlists", config).then(res => {
          console.log(res);
-         toggleIsGenerated();
+         setResults(res);
       });
    }
 
@@ -59,21 +70,59 @@ function Home() {
       <Box
          sx={{
             minHeight: '100vh',
-            backgroundImage: `url('${process.env.PUBLIC_URL}/homepage.jpg')`,
+            backgroundImage: `url('${process.env.PUBLIC_URL}/home.jpg')`,
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: 'green',
-            fontFamily: 'Nunito'
+            backgroundAttachment: 'fixed',
+            fontFamily: 'Raleway'
          }}
       >
-         <div>
-            <h1>Welcome [NAME].</h1>
-            <button onClick={generatePlaylist.bind(this)}>Generate Playlist!</button> 
-            {isGenerated && <h3>Completed!</h3>}
-         </div>
+         <Box
+            sx={{
+               display: 'flex',
+               justifyContent: 'center',
+               alignItems: 'center',
+               color: 'white'
+            }}
+         >
+            <Header />
+            <Box
+               sx={{
+                  margin: '20% 0 0 0',
+                  textAlign: 'center'
+               }}
+            >
+               <h1>Welcome [NAME].</h1>
+               <SimpleButton onClick={generatePlaylist.bind(this)} title='Generate' icon={<AudiotrackIcon />}/>
+               {isGenerated && 
+                  <div>
+                     <h2>Completed!</h2>
+                     <Box
+                        sx={{
+                           textAlign: 'start',
+                           marginTop: '20px',
+                           border: '1px solid red'
+                        }}
+                     >
+                        {songsAdded.map((songAdded) => (
+                           <Box
+                              sx={{
+                                 padding: '10px 16px',
+                                 margin: '20px 0',
+                                 borderBottom: '1px solid #FAFAFA',
+                                 boxShadow: '1px 3px 5px rgba(0,0,0,0.1)'
+                              }}
+                           >
+                              <h2 style={textMargin}>{songAdded.name}</h2>
+                              <p style={textMargin}>{songAdded.artist}</p>
+                              <p style={textMargin}>{songAdded.album}</p>
+                           </Box>
+                        ))}
+                     </Box>
+                  </div>
+               }
+            </Box>
+         </Box>
       </Box>
    );
 }

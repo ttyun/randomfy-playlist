@@ -1,0 +1,1 @@
+export const textColor = "#FF6961";
