@@ -92,7 +92,9 @@ function Home() {
                   textAlign: 'center'
                }}
             >
-               <h1>Welcome [NAME].</h1>
+               <h1>Welcome to your Randomfy Spotify Playlist Generator.</h1>
+               <h4>You've authenticated and it's finally time to fire up the playlist generator.</h4>
+               <h5>Go ahead and hit the button to randomly generated Spotify playlist for yourself and enjoy.</h5>
                <SimpleButton onClick={generatePlaylist.bind(this)} title='Generate' icon={<AudiotrackIcon />}/>
                {isGenerated && 
                   <div>
@@ -101,7 +103,7 @@ function Home() {
                         sx={{
                            textAlign: 'start',
                            marginTop: '20px',
-                           border: '1px solid red'
+                           border: '1px solid white'
                         }}
                      >
                         {songsAdded.map((songAdded) => (
@@ -109,7 +111,7 @@ function Home() {
                               sx={{
                                  padding: '10px 16px',
                                  margin: '20px 0',
-                                 borderBottom: '1px solid #FAFAFA',
+                                 borderBottom: '1px solid white',
                                  boxShadow: '1px 3px 5px rgba(0,0,0,0.1)'
                               }}
                            >

@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Header from './Header.js';
 import SimpleButton from './SimpleButton.js';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import { textColor } from '../constants';
 import {
    CLIENT_ID,
    SPOTIFY_AUTHORIZE_ENDPOINT,
