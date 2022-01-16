@@ -15,10 +15,11 @@ CORS(app)
 @app.route('/playlists', methods=['GET'])
 def processPlaylist():
    access_token = request.headers.get('Authorization')
-   added_track_names = generatePlaylist(access_token)
+   genre_types = next(request.args.values())
+   added_track_names = generatePlaylist(access_token, genre_types)
    return jsonify(added_tracks=added_track_names)
 
-def generatePlaylist(access_token):
+def generatePlaylist(access_token, genre_types):
    playlist_name = 'AUTOPLAY'
    description = 'Automatically generated playlist. Check for new songs you may like.'
    isPublic = True
@@ -26,18 +27,9 @@ def generatePlaylist(access_token):
    # Create spotify client
    spotify_client = SpotifyClient(access_token)
    
-   # Collect random list of top edm songs
-   random_edm_tracks = spotify_client.get_random_tracks(5)
-   
-   # Collect random list of top rap songs
-   random_rap_tracks = spotify_client.get_random_tracks(5)
+   # Collect random list songs
+   playlist_tracks = spotify_client.get_random_tracks(10, genre_types)
 
-   # Collect random list of album songs
-   #random_album_tracks = spotify_client.get_random_tracks_from_album('Whole Lotta Red')
-   random_album_tracks = []
-
-   # Combine these two lists together randomly
-   playlist_tracks = random_edm_tracks + random_rap_tracks + random_album_tracks
    playlist_track_uris = ''
    for track in playlist_tracks:
       playlist_track_uris += (track['uri'] + ',')

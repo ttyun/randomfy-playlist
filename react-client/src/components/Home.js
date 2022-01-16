@@ -1,9 +1,11 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
+import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import Header from './Header';
 import SimpleButton from './SimpleButton';
-import AudiotrackIcon from '@mui/icons-material/Audiotrack';
+import Dropdown from './Dropdown';
+import { genreTypeOptions } from '../data/genreTypes';
 import { textColor } from '../constants';
 
 const textMargin = {
@@ -57,6 +59,10 @@ function Home() {
          headers: {
             'Content-Type': 'application/json',
             'Authorization': localStorage.getItem("accessToken"),
+         },
+         params: {
+            // TODO TYUN: Retrieve and set genre types from dropdown.
+            'genreTypes': "edm"
          }
       }
 
@@ -94,7 +100,8 @@ function Home() {
             >
                <h1>Welcome to your Randomfy Spotify Playlist Generator.</h1>
                <h4>You've authenticated and it's finally time to fire up the playlist generator.</h4>
-               <h5>Go ahead and hit the button to randomly generated Spotify playlist for yourself and enjoy.</h5>
+               <h5>Go ahead and hit the button to randomly generate a Spotify playlist for yourself and enjoy.</h5>
+               <Dropdown type="genre" options={genreTypeOptions} />
                <SimpleButton onClick={generatePlaylist.bind(this)} title='Generate' icon={<AudiotrackIcon />}/>
                {isGenerated && 
                   <div>
