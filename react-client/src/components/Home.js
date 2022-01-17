@@ -16,6 +16,7 @@ function Home() {
    // React method to set state in non-React component
    const [isGenerated, setIsGenerated] = useState(false);
    const [songsAdded, setSongsAdded] = useState([]);
+   const [genreTypes, setGenreTypes] = useState([]);
 
    // React method to call "side effect"
    // Effectively the callback function is called whenever
@@ -54,6 +55,13 @@ function Home() {
    };
 
    function generatePlaylist() {
+      let genres = genreTypes.map(genreType => genreType['value']);
+      let genresJson = [];
+
+      genres.forEach(genre => {
+         genresJson.push({'value': genre})
+      });
+
       clearResults();
       const config = {
          headers: {
@@ -61,8 +69,7 @@ function Home() {
             'Authorization': localStorage.getItem("accessToken"),
          },
          params: {
-            // TODO TYUN: Retrieve and set genre types from dropdown.
-            'genreTypes': "edm"
+            genres
          }
       }
 
@@ -101,7 +108,7 @@ function Home() {
                <h1>Welcome to your Randomfy Spotify Playlist Generator.</h1>
                <h4>You've authenticated and it's finally time to fire up the playlist generator.</h4>
                <h5>Go ahead and hit the button to randomly generate a Spotify playlist for yourself and enjoy.</h5>
-               <Dropdown type="genre" options={genreTypeOptions} />
+               <Dropdown type="genre" options={genreTypeOptions} setGenreTypes={setGenreTypes} />
                <SimpleButton onClick={generatePlaylist.bind(this)} title='Generate' icon={<AudiotrackIcon />}/>
                {isGenerated && 
                   <div>

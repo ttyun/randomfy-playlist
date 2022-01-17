@@ -27,10 +27,10 @@ class SpotifyClient(object):
       return tracks
    
    # Get random tracks
-   def get_random_tracks(self, limit, genre_types):
+   def get_random_tracks(self, limit, genre_type):
       wildcard = f"%{random.choice(string.ascii_lowercase)}%"
-      if genre_types:
-         genre_q = f"genre: {genre_types}"
+      if genre_type and genre_type != 'any':
+         genre_q = f"genre: {genre_type}"
          wildcard += f" {genre_q}"
       query = urllib.parse.quote(wildcard)
       offset = random.randint(0, 1000)

@@ -1,4 +1,5 @@
 export const genreTypeOptions = [
+   { value: "any", label: "Any Genre" },
    { value: "pop", label: "Pop" },
    { value: "dance pop", label: "Dance Pop" },
    { value: "rap", label: "Rap" },

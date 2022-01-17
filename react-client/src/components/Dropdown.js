@@ -1,13 +1,28 @@
 import React, { useState } from 'react';
-import { default as ReactSelect } from "react-select";
+import { default as ReactSelect, components } from "react-select";
 import Box from '@mui/material/Box';
 import DropdownOption from "./DropdownOption";
 
 function Dropdown(props) {
    const [optionSelected, setOptionSelected] = useState(null);
 
+   const Menu = props => {
+      const optionSelectedLength = props.getValue().length || 0;
+      return (
+         <components.Menu {...props}>
+            {
+               optionSelectedLength < 2 ?
+               (props.children) : (
+                  <div style={{ margin: 15 }}>Max genres selected</div>
+               )
+            }
+         </components.Menu>
+      );
+   };
+
    function handleChange(selected) {
       setOptionSelected(selected);
+      props.setGenreTypes(selected);
       console.log(optionSelected);
    }
 
@@ -26,7 +41,8 @@ function Dropdown(props) {
             closeMenuOnSelect={false}
             hideSelectedOptions={false}
             components={{
-               Option: DropdownOption
+               Option: DropdownOption,
+               Menu: Menu
             }}
             onChange={handleChange.bind(this)}
             allowSelectAll={true}

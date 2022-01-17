@@ -15,7 +15,11 @@ CORS(app)
 @app.route('/playlists', methods=['GET'])
 def processPlaylist():
    access_token = request.headers.get('Authorization')
-   genre_types = next(request.args.values())
+   genres = request.args.getlist('genres[]')
+   genre_types = []
+   for genre in genres:
+      genre_types.append(genre)
+   print(genre_types)
    added_track_names = generatePlaylist(access_token, genre_types)
    return jsonify(added_tracks=added_track_names)
 
@@ -28,7 +32,13 @@ def generatePlaylist(access_token, genre_types):
    spotify_client = SpotifyClient(access_token)
    
    # Collect random list songs
-   playlist_tracks = spotify_client.get_random_tracks(10, genre_types)
+   if not genre_types:
+      playlist_tracks = spotify_client.get_random_tracks(10, None)
+   elif len(genre_types) <= 1:
+      playlist_tracks = spotify_client.get_random_tracks(10, genre_types[0])
+   else:
+      playlist_tracks = spotify_client.get_random_tracks(5, genre_types[0])
+      playlist_tracks += spotify_client.get_random_tracks(5, genre_types[1])
 
    playlist_track_uris = ''
    for track in playlist_tracks:
